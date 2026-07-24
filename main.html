@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Portfólio de Victor Gabriel — desenvolvedor e tecnólogo em Sistemas Embarcados."
+    />
+
+    <!-- Abre a conexão com os CDNs antes de precisar deles.
+         Economiza o DNS + TLS na hora do download real. -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- A fonte estava em @import dentro do styles.css, o que obriga o
+         navegador a baixar o CSS INTEIRO antes de sequer descobrir a fonte.
+         Como <link> aqui, os dois baixam em paralelo. -->
+    <!-- Só os pesos que o CSS realmente usa. O original pedia 100..600;
+         os pesos 100/200/300 nunca eram aplicados, e 700/800 já caíam no
+         600 por não existirem — então a aparência não muda, só o download. -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+    />
+    <!-- Ícones locais (máscaras SVG). Substituem o Font Awesome via CDN,
+         que baixava 268 KB de fontes só para 15 ícones. -->
+    <link rel="stylesheet" href="icones.css" />
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- A foto da home é o maior elemento visível: avisa o navegador
+         para buscá-la com prioridade, antes de tudo que vem depois. -->
+    <link rel="preload" as="image" href="eu.webp" fetchpriority="high" />
+
+    <!-- defer: baixa em paralelo agora, executa depois do HTML pronto,
+         mantendo a ordem (o GSAP precisa existir antes de animacoes.js). -->
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+    ></script>
+    <script defer src="script.js"></script>
+    <script defer src="animacoes.js"></script>
+
+    <title>Victor Gabriel — Portfólio</title>
+  </head>
+  <body>
+    <header>
+      <a href="#home" class="logo">Victor Gabriel</a>
+
+      <nav id="nav">
+        <a href="#home" class="active"> Inicio</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#educacao">Educação</a>
+        <a href="#habilidades">Habilidades</a>
+        <a href="#experiencia">Experiência</a>
+        <a href="#contato">Contato</a>
+      </nav>
+
+      <button
+        id="menu-icon"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        aria-controls="nav"
+      >
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </header>
+    <section class="home" id="home">
+      <div class="home-img">
+        <!-- srcset = os tamanhos disponíveis; sizes = quanto da tela a foto
+             ocupa em cada caso (bate com o CSS: 32vw no desktop, 60vw a
+             partir de 995px). Com os dois, o navegador escolhe o menor
+             arquivo que ainda fica nítido — no celular baixa 17 KB em vez
+             de 69 KB. -->
+        <img
+          src="eu.webp"
+          srcset="eu-400.webp 400w, eu-600.webp 600w, eu.webp 1085w"
+          sizes="(max-width: 995px) 70vw, 32vw"
+          alt="Foto de Victor Gabriel"
+          width="1085"
+          height="1450"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+      <div class="home-content">
+        <h1>Ola, Eu sou <span>Victor Gabriel</span></h1>
+        <h3 class="typing-text">Formado em , <span></span></h3>
+        <p>
+          Sempre tive um grande interesse por tecnologia. Desde criança, sonhava
+          em trabalhar com desenvolvimento, e hoje continuo aprendendo todos os
+          dias, motivado pela curiosidade de criar e evoluir.
+        </p>
+        <div class="social-icons">
+          <a href="https://www.linkedin.com/in/victorsouzadev/" target="_blank"
+            ><i class="fa-brands fa-linkedin"></i
+          ></a>
+          <a href="https://github.com/VictorGabriel337" target="_blank"
+            ><i class="fa-brands fa-github"></i
+          ></a>
+          <a href="https://wa.me/5515988031611" target="_blank"
+            ><i class="fa-brands fa-whatsapp"></i
+          ></a>
+        </div>
+        <a href="curriculo 2026.pdf" target="_blank" class="btn">Curriculo</a>
+      </div>
+    </section>
+    <section class="servicos" id="servicos">
+      <div class="secaoCidade">
+        <div class="titulo">
+          <h2 class="textoSplit">Serviços ja desenvolvido</h2>
+          <span class="linha">São projetos em Homologação e 1 em produção</span>
+        </div>
+       
+        <div class="cards">
+          <div class="card">
+            <video
+              loop
+              muted
+              playsinline
+              preload="none"
+              data-poster="img/poster-sistema.webp"
+              data-src="video/sistema.mp4"
+            ></video>
+            <h3>Projeto Sistema PDV</h3>
+            <p>DOMLILOW</p>
+          </div>
+          <div class="card">
+            <video
+              loop
+              muted
+              playsinline
+              preload="none"
+              data-poster="img/poster-stranger-things.webp"
+              data-src="video/stranger-things.mp4"
+            ></video>
+            <h3>Landing Page</h3>
+            <p>Stranger Things</p>
+          </div>
+          <div class="card">
+            <video
+              loop
+              muted
+              playsinline
+              preload="none"
+              data-poster="img/poster-envases.webp"
+              data-src="video/envases.mp4"
+            ></video>
+            <h3>Projeto De Iot</h3>
+            <p>Envases</p>
+          </div>
+          <div class="card">
+            <video
+              loop
+              muted
+              playsinline
+              preload="none"
+              data-poster="img/poster-texinstrument.webp"
+              data-src="video/texInstrument.mp4"
+            ></video>
+            <h3>Projeto Sensor</h3>
+            <p>Tex Instrument</p>
+          </div>
+          <div class="card">
+            <video
+              loop
+              muted
+              playsinline
+              preload="none"
+              data-poster="img/poster-projetotintas.webp"
+              data-src="video/ProjetoTintas.mp4"
+            ></video>
+            <h3>Projeto de Tintas</h3>
+            <p>Saci Tintas | FATEC</p>
+          </div>
+          <div class="card">
+            <video
+              loop
+              muted
+              playsinline
+              preload="none"
+              data-poster="img/poster-igrejacompleto.webp"
+              data-src="video/igrejaCompleto.mp4"
+            ></video>
+            <h3>Projeto Igreja</h3>
+            <p>Igreja Belem</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="educacao" id="educacao">
+      <h2>Educação</h2>
+      <div class="depoimentos">
+        <div class="depoimento">
+          <img src="img/etec.webp" alt="Logo da ETEC" width="260" height="192" loading="lazy" decoding="async" />
+          <h3>Tecnico em Eletroeletronica</h3>
+          <p>
+            O curso Técnico em Eletroeletrônica forma profissionais capazes de
+            instalar, montar, manter e consertar equipamentos e sistemas
+            elétricos e eletrônicos. Durante o curso, o aluno aprende sobre
+            eletricidade, eletrônica, automação, comandos elétricos,
+            interpretação de esquemas elétricos, uso de instrumentos de medição
+            e normas de segurança, preparando-se para atuar na indústria e em
+            diversos setores tecnológicos.
+          </p>
+        </div>
+        <div class="depoimento">
+          <img src="img/fatec.webp" alt="Logo da FATEC" width="260" height="173" loading="lazy" decoding="async" />
+          <h3>Tecnologo Em Sistemas Embarcado</h3>
+          <p>
+            O curso de Tecnologia em Sistemas Embarcados forma profissionais
+            capacitados para desenvolver soluções que integram hardware e
+            software. Durante a graduação, o aluno adquire conhecimentos em
+            programação, eletrônica, arquitetura de computadores, sistemas
+            operacionais, redes, automação e desenvolvimento de dispositivos
+            inteligentes, estando preparado para atuar na criação, manutenção e
+            evolução de tecnologias utilizadas em diversos setores da indústria
+            e da inovação.
+          </p>
+        </div>
+        <div class="depoimento">
+          <img src="img/etec.webp" alt="Logo da ETEC" width="260" height="192" loading="lazy" decoding="async" />
+          <h3>Tecnico em Automação industrial</h3>
+          <p>
+            O curso Técnico em Automação Industrial forma profissionais capazes
+            de projetar, implementar e manter sistemas automatizados em
+            ambientes industriais. Durante o curso, o aluno aprende sobre
+            controle de processos, robótica, instrumentação, programação de
+            CLPs, redes industriais e segurança, preparando-se para atuar na
+            otimização e inovação de processos industriais.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="habilidades" id="habilidades">
+      <h2>Habilidades</h2>
+
+      <div class="skill-box">
+        <div class="title">Minhas Skills ( stacks )</div>
+
+        <div class="bar">
+          <div class="info">
+            <span><i class="fa-brands fa-html5"></i> HTML5</span>
+          </div>
+          <div class="track">
+            <div class="fill" style="--w: 95%; --clr: #ff4d4d; --delay: 0.1s">
+              <span class="tooltip">95%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bar">
+          <div class="info">
+            <span style="color: #00d8ff"
+              ><i class="fa-brands fa-css3-alt"></i> CSS3</span
+            >
+          </div>
+          <div class="track">
+            <div class="fill" style="--w: 90%; --clr: #2196f3; --delay: 0.3s">
+              <span class="tooltip">90%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bar">
+          <div class="info">
+            <span style="color: #f0db4f"
+              ><i class="fa-brands fa-js"></i> JavaScript</span
+            >
+          </div>
+          <div class="track">
+            <div class="fill" style="--w: 46%; --clr: #ffeb3b; --delay: 0.5s">
+              <span class="tooltip">46%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bar">
+          <div class="info">
+            <span style="color: #fff"
+              ><i class="fa-brands fa-linux"></i> Linux</span
+            >
+          </div>
+          <div class="track">
+            <div class="fill" style="--w: 20%; --clr: white; --delay: 0.7s">
+              <span class="tooltip">20%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bar">
+          <div class="info">
+            <span style="color: blue"><i class="fa-solid fa-c"></i> C</span>
+          </div>
+          <div class="track">
+            <div class="fill" style="--w: 60%; --clr: blue; --delay: 0.7s">
+              <span class="tooltip">60%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bar">
+          <div class="info">
+            <span style="color: rgb(43, 255, 0)"
+              ><i class="fa-solid fa-database"></i> MySQL</span
+            >
+          </div>
+          <div class="track">
+            <div
+              class="fill"
+              style="--w: 5%; --clr: rgb(43, 255, 0); --delay: 0.7s"
+            >
+              <span class="tooltip">5%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bar">
+          <div class="info">
+            <span style="color: orange"
+              ><i class="fa-solid fa-robot"></i> Claude Code</span
+            >
+          </div>
+          <div class="track">
+            <div class="fill" style="--w: 65%; --clr: orange; --delay: 0.7s">
+              <span class="tooltip">65%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bar">
+          <div class="info">
+            <span style="color: rgb(0, 242, 255)"
+              ><i class="fa-brands fa-python"></i> Python</span
+            >
+          </div>
+          <div class="track">
+            <div
+              class="fill"
+              style="--w: 10%; --clr: rgb(0, 242, 255); --delay: 0.7s"
+            >
+              <span class="tooltip">10%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="experiencia" id="experiencia">
+      <h2>Experiência</h2>
+      <div class="empresas">
+        <div class="empresas-track">
+          <img src="img/sorotel.webp" alt="Sorotel" width="260" height="196" loading="lazy" decoding="async" />
+          <img src="img/enginstrel.png" alt="Enginstrel" width="200" height="200" loading="lazy" decoding="async" />
+          <img src="img/2btech.webp" alt="2BTech" width="260" height="260" loading="lazy" decoding="async" />
+          <img src="img/envases.webp" alt="Envases" width="200" height="200" loading="lazy" decoding="async" />
+        </div>
+      </div>
+      <div class="empresas-descricao">
+        <div class="empresa-desc">
+          <h4>Sorotel</h4>
+          <p>
+            A Sorotel é uma empresa especializada na produção e montagem de
+            placas eletrônicas. Atua na fabricação, montagem e testes de
+            circuitos eletrônicos utilizados em diversos equipamentos, seguindo
+            padrões de qualidade para atender às necessidades de diferentes
+            segmentos da indústria.
+          </p>
+        </div>
+        <div class="empresa-desc">
+          <h4>Enginstrel</h4>
+          <p>
+            A Enginstrel é uma empresa especializada em soluções para
+            instrumentação industrial, atuando na fabricação, instalação,
+            calibração e manutenção de equipamentos utilizados no controle e
+            monitoramento de processos industriais. Seu principal foco é em
+            medidores de vazão, garantindo a precisão e a confiabilidade das
+            medições em diferentes aplicações da indústria.
+          </p>
+        </div>
+        <div class="empresa-desc">
+          <h4>2BTech</h4>
+          <p>
+            A 2BTech é uma empresa especializada no desenvolvimento de soluções
+            tecnológicas para máquinas de venda automática (vending machines).
+            Atua com sistemas de telemetria, monitoramento remoto e meios de
+            pagamento eletrônico, oferecendo tecnologias que permitem acompanhar
+            o desempenho das máquinas, gerenciar operações e facilitar as
+            transações dos usuários.
+          </p>
+        </div>
+        <div class="empresa-desc">
+          <h4>Envases</h4>
+          <p>
+            A Envases é uma empresa do setor de embalagens especializada na
+            fabricação de garrafas PET retornáveis para a indústria de bebidas.
+            Seus processos envolvem a produção, inspeção e controle de qualidade
+            das embalagens, atendendo aos padrões exigidos por grandes empresas
+            do segmento, como a Coca-Cola.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="contato" id="contato">
+      <h2>Contato</h2>
+      <p class="contato-intro">
+        Tem uma vaga, um projeto ou só quer trocar uma ideia sobre tecnologia?
+        Escolha o canal que preferir — respondo por todos eles.
+      </p>
+
+      <div class="contato-grid">
+        <a
+          class="contato-card"
+          href="https://wa.me/5515988031611"
+          target="_blank"
+        >
+          <i class="fa-brands fa-whatsapp"></i>
+          <h4>WhatsApp</h4>
+          <span>(15) 98803-1611</span>
+        </a>
+
+        <a class="contato-card" href="mailto:victor.abrao337@gmail.com">
+          <i class="fa-solid fa-envelope"></i>
+          <h4>E-mail</h4>
+          <span>victor.abrao337@gmail.com</span>
+        </a>
+
+        <a
+          class="contato-card"
+          href="https://www.linkedin.com/in/victorsouzadev/"
+          target="_blank"
+        >
+          <i class="fa-brands fa-linkedin"></i>
+          <h4>LinkedIn</h4>
+          <span>/victorsouzadev</span>
+        </a>
+
+        <a
+          class="contato-card"
+          href="https://www.instagram.com/victorsouzadev/"
+          target="_blank"
+        >
+          <i class="fa-brands fa-instagram"></i>
+          <h4>Instagram</h4>
+          <span>@victorsouzadev</span>
+        </a>
+      </div>
+
+      <a href="https://wa.me/5515988031611" target="_blank" class="btn"
+        >Vamos conversar</a
+      >
+    </section>
+
+  </body>
+</html>

@@ -1,0 +1,11 @@
+# Backups locais — NÃO devem ir para o servidor.
+# Guardam os arquivos antes da otimização, caso você queira voltar atrás.
+
+# imagens originais (PNG/JPG), ~2,2 MB
+_originais/
+
+# vídeos originais em 1080p, ~152 MB
+_video_originais/
+
+# script de manutenção, não faz parte do site publicado
+otimizar-videos.ps1
