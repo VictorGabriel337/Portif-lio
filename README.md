@@ -6,7 +6,7 @@ Site estático: HTML, CSS e JavaScript puro, sem build. É só subir os arquivos
 
 | Arquivo | O que é |
 |---|---|
-| `main.html` | a página inteira |
+| `index.html` | a página inteira |
 | `styles.css` | estilos e responsividade |
 | `icones.css` | os 15 ícones, como máscaras SVG embutidas |
 | `script.js` | menu ativo, menu hambúrguer e carregamento dos vídeos sob demanda |
@@ -42,14 +42,14 @@ Três ajustes que valem mais que qualquer otimização de código:
 |---|---|---|
 | `icones.css` | 27 KB | ~6 KB |
 | `styles.css` | 18 KB | ~4 KB |
-| `main.html` | 18 KB | ~4 KB |
+| `index.html` | 18 KB | ~4 KB |
 
 **2. Cache longo para a mídia**, que não muda:
 
 ```
 Cache-Control: public, max-age=31536000, immutable
 ```
-para `video/`, `img/` e `*.webp`. Para `main.html`, use cache curto ou
+para `video/`, `img/` e `*.webp`. Para `index.html`, use cache curto ou
 `no-cache`, senão as atualizações demoram a aparecer.
 
 **3. Range requests nos `.mp4`.** É o que permite ao navegador transmitir o vídeo
@@ -62,7 +62,7 @@ responde `Accept-Ranges: bytes`.
 ```
 python -m http.server 8080
 ```
-e abrir `http://localhost:8080/main.html`.
+e abrir `http://localhost:8080/`.
 
-Abrir o `main.html` direto pelo `file://` **não funciona direito** — os vídeos e
+Abrir o `index.html` direto pelo `file://` **não funciona direito** — os vídeos e
 o `IntersectionObserver` dependem de HTTP.
