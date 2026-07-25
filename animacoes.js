@@ -162,7 +162,7 @@ function iniciarAnimacoes() {
     clearProps: "all",
     scrollTrigger: { trigger: ".contato-grid" },
   });
-  revelar(".contato > .btn", { y: 30 });
+  revelar(".contato > .btn", { gatilho: ".contato", y: 30 });
 
   // A fonte (Poppins) chega depois do CSS e muda a altura dos textos, deslocando
   // as seções. Se isso acontecer depois que o ScrollTrigger já calculou as
