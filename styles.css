@@ -637,19 +637,19 @@ span {
 }
 
 .home-img img {
-  animation: entrar-zoom 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) both;
+  animation: entrar-zoom 1.4s cubic-bezier(0.165, 0.84, 0.44, 1) both;
 }
 
 .home-content > * {
-  animation: entrar-esquerda 0.9s cubic-bezier(0.165, 0.84, 0.44, 1) both;
+  animation: entrar-esquerda 1.1s cubic-bezier(0.165, 0.84, 0.44, 1) both;
 }
 
-/* o mesmo escalonamento de 0.15s que os outros grupos usam */
+/* escalonamento de 0.18s: o último item (botão) fecha em 1,82s */
 .home-content > *:nth-child(1) { animation-delay: 0s; }
-.home-content > *:nth-child(2) { animation-delay: 0.15s; }
-.home-content > *:nth-child(3) { animation-delay: 0.3s; }
-.home-content > *:nth-child(4) { animation-delay: 0.45s; }
-.home-content > *:nth-child(5) { animation-delay: 0.6s; }
+.home-content > *:nth-child(2) { animation-delay: 0.18s; }
+.home-content > *:nth-child(3) { animation-delay: 0.36s; }
+.home-content > *:nth-child(4) { animation-delay: 0.54s; }
+.home-content > *:nth-child(5) { animation-delay: 0.72s; }
 
 @media (prefers-reduced-motion: reduce) {
   .home-img img,
@@ -674,8 +674,8 @@ span {
 .js .contato-card,
 .js .contato > .btn {
   /* cubic-bezier ≈ power3.out do GSAP: sai rápido e desacelera no fim */
-  transition: opacity 0.9s cubic-bezier(0.165, 0.84, 0.44, 1),
-    transform 0.9s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: opacity 1.1s cubic-bezier(0.165, 0.84, 0.44, 1),
+    transform 1.1s cubic-bezier(0.165, 0.84, 0.44, 1);
   /* --i (índice) e --passo (intervalo) são postos pelo animacoes.js.
      Quem não faz parte de um grupo escalonado fica com 0 e entra na hora. */
   transition-delay: calc(var(--i, 0) * var(--passo, 0s));
@@ -726,7 +726,7 @@ span {
 /* Os cards de contato passavam um pouco do ponto e voltavam (back.out) */
 .js .contato-card {
   transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
-  transition-duration: 0.7s;
+  transition-duration: 0.9s;
 }
 
 .js .contato-card:not(.visivel) {
@@ -736,7 +736,7 @@ span {
 
 /* --- Barras de skill: a largura final vem do --w de cada uma --- */
 .js .fill {
-  transition: width 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: width 1.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transition-delay: calc(var(--i, 0) * var(--passo, 0s));
 }
 
@@ -744,11 +744,11 @@ span {
   width: 0;
 }
 
-/* O tooltip só aparece depois da barra ter enchido: 0.9s de espera
-   fixa, mais o escalonamento que a barra correspondente já tem. */
+/* O tooltip só aparece depois da barra ter enchido: 1.1s de espera fixa,
+   mais o escalonamento que a barra correspondente já tem. */
 .js .tooltip {
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  transition-delay: calc(0.9s + var(--i, 0) * var(--passo, 0s));
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition-delay: calc(1.1s + var(--i, 0) * var(--passo, 0s));
 }
 
 .js .tooltip:not(.visivel) {
