@@ -163,7 +163,7 @@ span {
 .btn {
   display: inline-block;
   padding: 1rem 2.8rem;
-  background-color: black;
+  background-color: transparent;
   border-radius: 4rem;
   font-size: 1.6rem;
   color: #b74b4b;
@@ -172,6 +172,7 @@ span {
   border: 2px solid #b74b4b;
   transition: 0.3s ease;
   cursor: pointer;
+  z-index: 7;
 }
 
 .btn:hover {
