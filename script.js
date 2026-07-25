@@ -53,10 +53,11 @@ function abrirFecharMenu(abrir) {
   nav.classList.toggle("active", aberto);
   botaoMenu.setAttribute("aria-expanded", aberto);
   botaoMenu.setAttribute("aria-label", aberto ? "Fechar menu" : "Abrir menu");
-  // Troca o ícone: 3 tracinhos <-> X
-  botaoMenu.firstElementChild.className = aberto
-    ? "fa-solid fa-xmark"
-    : "fa-solid fa-bars";
+  // Troca o ícone: 3 tracinhos <-> X. Os dois desenhos ja estao no sprite
+  // do topo do body; basta apontar o <use> para o outro.
+  botaoMenu
+    .querySelector("use")
+    .setAttribute("href", aberto ? "#i-xmark" : "#i-bars");
 }
 
 botaoMenu.addEventListener("click", () => abrirFecharMenu());

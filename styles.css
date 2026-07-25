@@ -390,7 +390,7 @@ span {
     letter-spacing: 0.5px;
 }
 
-.info i {
+.info .ico {
     font-size: 20px;
     margin-right: 12px;
 }
@@ -538,7 +538,7 @@ span {
         box-shadow: 0 0 25px rgba(183, 75, 75, 0.4);
     }
 
-    .contato-card i {
+    .contato-card .ico {
         font-size: 3.5rem;
         color: #b74b4b;
         margin-bottom: 1.5rem;
