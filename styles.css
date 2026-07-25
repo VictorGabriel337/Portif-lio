@@ -193,6 +193,13 @@ span {
   position: relative;
 }
 
+.funcao{
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: #b74b4b;
+}
+
+
 .typing-text span::before {
   content: "software Developer";
   color: #b74b4b;
@@ -547,6 +554,10 @@ span {
         color: #ccc;
         word-break: break-word;
     }
+
+    > .btn {
+        margin-top: 3rem;
+    }
 }
 
 @keyframes marquee {
@@ -766,6 +777,10 @@ span {
     scroll-margin-top: 8rem;
   }
 
+  .funcao {
+    font-size: 2.2rem;
+  }
+
   /* Título da seção Serviços: h2 e legenda deixam de disputar a mesma linha */
   .servicos .secaoCidade .titulo {
     flex-direction: column;
@@ -804,6 +819,10 @@ span {
 @media (max-width: 480px) {
   section {
     padding: 3rem 4% 4rem;
+  }
+
+  .funcao {
+    font-size: 1.8rem;
   }
 
   nav {

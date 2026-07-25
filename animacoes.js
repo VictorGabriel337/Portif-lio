@@ -164,6 +164,15 @@ function iniciarAnimacoes() {
   });
   revelar(".contato > .btn", { y: 30 });
 
+  // A fonte (Poppins) chega depois do CSS e muda a altura dos textos, deslocando
+  // as seções. Se isso acontecer depois que o ScrollTrigger já calculou as
+  // posições, os gatilhos ficam presos em lugares antigos e disparam na hora
+  // errada (o bug intermitente: depende de quando a fonte carrega). Recalcula
+  // assim que a fonte estiver pronta.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => ScrollTrigger.refresh());
+  }
+
   // Depois que tudo (imagens, vídeos) terminar de carregar, os elementos podem
   // ter mudado de altura. Isso manda o ScrollTrigger recalcular as posições.
   window.addEventListener("load", () => ScrollTrigger.refresh());
