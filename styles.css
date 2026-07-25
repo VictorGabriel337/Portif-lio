@@ -554,10 +554,11 @@ span {
         color: #ccc;
         word-break: break-word;
     }
+}
 
-    > .btn {
-        margin-top: 3rem;
-    }
+.contato > .btn {
+    display: block;
+    margin-top: 3rem;
 }
 
 @keyframes marquee {
