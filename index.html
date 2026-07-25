@@ -8,9 +8,17 @@
       content="Portfólio de Victor Gabriel — desenvolvedor e tecnólogo em Sistemas Embarcados."
     />
 
-    <!-- Abre a conexão com os CDNs antes de precisar deles.
+    <!-- Marca que o JavaScript está ativo ANTES da página pintar. Só sob
+         esta classe o CSS esconde os elementos para animá-los depois; se o
+         JS falhar, nada é escondido e o site continua legível.
+         Precisa ser inline e aqui em cima: um arquivo externo chegaria
+         tarde demais e o conteúdo apareceria antes de sumir. -->
+    <script>
+      document.documentElement.className = "js";
+    </script>
+
+    <!-- Abre a conexão com o Google Fonts antes de precisar dele.
          Economiza o DNS + TLS na hora do download real. -->
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
@@ -24,27 +32,22 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
     />
+    <!-- O ?v= existe para furar o cache do navegador. Sem ele, um celular
+         que já visitou o site continua servindo o CSS/JS antigo do disco e
+         não vê correção nenhuma. Ao mexer nestes arquivos, suba o número. -->
     <!-- Só o tamanho/cor dos ícones. Os desenhos vêm no próprio HTML
          (sprite no topo do body), para pintarem no primeiro paint. -->
-    <link rel="stylesheet" href="icones.css" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="icones.css?v=2" />
+    <link rel="stylesheet" href="styles.css?v=2" />
 
     <!-- A foto da home é o maior elemento visível: avisa o navegador
          para buscá-la com prioridade, antes de tudo que vem depois. -->
     <link rel="preload" as="image" href="eu.webp" fetchpriority="high" />
 
-    <!-- defer: baixa em paralelo agora, executa depois do HTML pronto,
-         mantendo a ordem (o GSAP precisa existir antes de animacoes.js). -->
-    <script
-      defer
-      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
-    ></script>
-    <script
-      defer
-      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
-    ></script>
-    <script defer src="script.js"></script>
-    <script defer src="animacoes.js"></script>
+    <!-- defer: baixa em paralelo agora, executa depois do HTML pronto.
+         Ambos são locais e não dependem de nenhuma biblioteca externa. -->
+    <script defer src="script.js?v=2"></script>
+    <script defer src="animacoes.js?v=2"></script>
 
     <title>Victor Gabriel — Portfólio</title>
   </head>

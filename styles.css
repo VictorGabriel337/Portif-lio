@@ -405,8 +405,9 @@ span {
 
 .fill {
     height: 100%;
-    /* começa vazia: quem enche é o GSAP, quando a seção entra na tela */
-    width: 0;
+    /* cheia por padrão: sem JS, a barra já mostra o valor real.
+       Quem a esvazia para animar é o bloco de revelação, sob html.js */
+    width: var(--w);
     background: var(--clr);
     border-radius: 20px;
     position: relative;
@@ -423,8 +424,6 @@ span {
     font-size: 12px;
     font-weight: 800;
     padding: 3px 8px;
-    /* idem: o GSAP revela o tooltip depois que a barra enche */
-    opacity: 0;
 }
 
 .tooltip::before {
@@ -596,6 +595,174 @@ span {
     81%, 100%{
         content: "Script Writer";
     } */
+}
+
+/* =====================================================================
+   REVELAÇÃO AO ROLAR
+
+   Substitui o GSAP + ScrollTrigger (113 KB vindos de um CDN). O ponto
+   central: o estado escondido está AQUI, no CSS, então vale desde o
+   primeiro paint. Antes ele era aplicado por JavaScript de terceiro que
+   só chegava depois — a página aparecia, sumia e voltava, e no celular
+   esse intervalo era de segundos.
+
+   Tudo é prefixado por "html.js", classe posta por um script inline no
+   <head>. Sem JavaScript nada é escondido, então o site continua legível
+   mesmo se este arquivo for a única coisa que carregar.
+
+   O par é: a regra abaixo dá a transição a todos; as regras seguintes,
+   com :not(.visivel), dão o estado inicial. Quando o JS acrescenta
+   .visivel, a regra deixa de casar e o elemento volta ao natural —
+   sem !important e sem precisar repetir a lista de seletores.
+   ===================================================================== */
+
+/* --- Topo da página: anima sozinho, sem JavaScript nenhum ---
+   A home é o que o usuário vê primeiro, então ela NÃO pode depender de
+   script para existir na tela. Aqui é animação CSS pura, que começa a
+   tocar no primeiro frame: não há estado "escondido esperando alguém".
+   Por isso este bloco não é prefixado por .js — ele funciona mesmo com
+   o JavaScript desligado. */
+@keyframes entrar-zoom {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes entrar-esquerda {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+}
+
+.home-img img {
+  animation: entrar-zoom 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) both;
+}
+
+.home-content > * {
+  animation: entrar-esquerda 0.9s cubic-bezier(0.165, 0.84, 0.44, 1) both;
+}
+
+/* o mesmo escalonamento de 0.15s que os outros grupos usam */
+.home-content > *:nth-child(1) { animation-delay: 0s; }
+.home-content > *:nth-child(2) { animation-delay: 0.15s; }
+.home-content > *:nth-child(3) { animation-delay: 0.3s; }
+.home-content > *:nth-child(4) { animation-delay: 0.45s; }
+.home-content > *:nth-child(5) { animation-delay: 0.6s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .home-img img,
+  .home-content > * {
+    animation: none;
+  }
+}
+
+/* --- Demais seções: reveladas ao entrar na tela --- */
+
+.js .servicos .titulo > *,
+.js .servicos .card,
+.js .educacao > h2,
+.js .educacao .depoimento,
+.js .habilidades > h2,
+.js .skill-box,
+.js .experiencia > h2,
+.js .experiencia .empresas,
+.js .empresa-desc,
+.js .contato > h2,
+.js .contato-intro,
+.js .contato-card,
+.js .contato > .btn {
+  /* cubic-bezier ≈ power3.out do GSAP: sai rápido e desacelera no fim */
+  transition: opacity 0.9s cubic-bezier(0.165, 0.84, 0.44, 1),
+    transform 0.9s cubic-bezier(0.165, 0.84, 0.44, 1);
+  /* --i (índice) e --passo (intervalo) são postos pelo animacoes.js.
+     Quem não faz parte de um grupo escalonado fica com 0 e entra na hora. */
+  transition-delay: calc(var(--i, 0) * var(--passo, 0s));
+}
+
+/* --- Estados iniciais, por grupo --- */
+
+.js .servicos .titulo > *:not(.visivel),
+.js .educacao > h2:not(.visivel),
+.js .habilidades > h2:not(.visivel),
+.js .experiencia > h2:not(.visivel),
+.js .contato > h2:not(.visivel),
+.js .contato-intro:not(.visivel) {
+  opacity: 0;
+  transform: translateY(60px);
+}
+
+.js .servicos .card:not(.visivel) {
+  opacity: 0;
+  transform: translateY(80px) scale(0.92);
+}
+
+.js .educacao .depoimento:not(.visivel) {
+  opacity: 0;
+  transform: translateY(70px);
+}
+
+.js .skill-box:not(.visivel) {
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.js .experiencia .empresas:not(.visivel) {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.js .empresa-desc:not(.visivel) {
+  opacity: 0;
+  transform: translateY(60px);
+}
+
+.js .contato > .btn:not(.visivel) {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Os cards de contato passavam um pouco do ponto e voltavam (back.out) */
+.js .contato-card {
+  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-duration: 0.7s;
+}
+
+.js .contato-card:not(.visivel) {
+  opacity: 0;
+  transform: translateY(60px) scale(0.95);
+}
+
+/* --- Barras de skill: a largura final vem do --w de cada uma --- */
+.js .fill {
+  transition: width 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition-delay: calc(var(--i, 0) * var(--passo, 0s));
+}
+
+.js .fill:not(.visivel) {
+  width: 0;
+}
+
+/* O tooltip só aparece depois da barra ter enchido: 0.9s de espera
+   fixa, mais o escalonamento que a barra correspondente já tem. */
+.js .tooltip {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition-delay: calc(0.9s + var(--i, 0) * var(--passo, 0s));
+}
+
+.js .tooltip:not(.visivel) {
+  opacity: 0;
+  transform: translateY(5px);
+}
+
+/* Quem pediu menos movimento no sistema recebe tudo pronto, sem transição.
+   O animacoes.js revela todos os elementos e marca o <html> com esta classe. */
+.sem-animacao *,
+.sem-animacao *::before,
+.sem-animacao *::after {
+  transition: none !important;
+  animation: none !important;
 }
 
 /* =====================================================================

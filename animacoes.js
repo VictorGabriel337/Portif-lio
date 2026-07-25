@@ -1,179 +1,115 @@
-// ===== Animações com GSAP + ScrollTrigger =====
-// Regra geral: NADA anima no carregamento da página.
-// Cada animação só dispara quando a seção dela entra na tela,
-// e REPETE toda vez que a seção sai e volta.
+// ===== Animações de entrada, sem biblioteca =====
+//
+// Antes isto usava GSAP + ScrollTrigger, baixados de um CDN (113 KB).
+// O problema não era o peso: era a ORDEM. O HTML e o CSS chegavam e a
+// página aparecia inteira; só então o GSAP terminava de baixar, rodava
+// gsap.from() e ESCONDIA 21 elementos de uma vez, revelando-os de novo
+// em seguida. No desktop esse intervalo era ~120 ms e ninguém via. No
+// celular, com DNS + TLS + 113 KB de terceiro, virava segundos — e o
+// conteúdo principal (h1, subtítulo, parágrafo, social icons) ficava
+// esperando JavaScript de fora para simplesmente existir na tela.
+//
+// Agora o estado escondido mora no CSS e vale desde o primeiro paint,
+// então não há mais o ciclo "aparece -> some -> volta". Quem revela é o
+// IntersectionObserver, que o projeto já usa para os vídeos.
+//
+// Rede de segurança: o estado escondido só se aplica sob "html.js", e
+// essa classe é posta por um script inline no <head>. Se o JavaScript
+// falhar, nada nunca é escondido.
 
-// --- Rede de segurança -------------------------------------------------
-// Se o GSAP não carregar (sem internet, CDN fora do ar), as barras de skill
-// ficariam vazias para sempre. Aqui preenchemos elas na mão e paramos por aqui.
-function mostrarTudoSemAnimacao() {
-  document.querySelectorAll(".fill").forEach((barra) => {
-    barra.style.width = getComputedStyle(barra).getPropertyValue("--w").trim();
-  });
-  document.querySelectorAll(".tooltip").forEach((t) => (t.style.opacity = 1));
-}
+// --- Quem revela quem ---------------------------------------------------
+// gatilho = o elemento observado; alvos = o que aparece quando ele entra.
+// Observar o container (e não cada filho) preserva o efeito em cascata:
+// os cards de uma seção entram juntos, escalonados, como era no GSAP.
+//
+// margem = a que altura da tela o gatilho dispara, em % (85 = quando o
+// topo dele alcança 85% da altura da janela — o "top 85%" do ScrollTrigger).
+// passo = atraso acumulado entre um alvo e o próximo, em segundos.
+//
+// A seção .home NÃO está nesta lista de propósito: ela é a primeira coisa
+// que o usuário vê, então anima por CSS puro (@keyframes em styles.css),
+// tocando já no primeiro frame. Conteúdo acima da dobra não deve depender
+// de script nenhum para existir na tela.
+const grupos = [
+  { gatilho: ".servicos", alvos: ".servicos .titulo > *", passo: 0.15 },
+  { gatilho: ".servicos .cards", alvos: ".servicos .card", passo: 0.12 },
 
-const semMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  { gatilho: ".educacao", alvos: ".educacao > h2" },
+  { gatilho: ".depoimentos", alvos: ".educacao .depoimento", margem: 80, passo: 0.2 },
 
-if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined" || semMovimento) {
-  mostrarTudoSemAnimacao();
+  { gatilho: ".habilidades", alvos: ".habilidades > h2" },
+  { gatilho: ".habilidades", alvos: ".skill-box" },
+  { gatilho: ".skill-box", alvos: ".skill-box .fill", margem: 70, passo: 0.1 },
+  { gatilho: ".skill-box", alvos: ".skill-box .tooltip", margem: 70, passo: 0.1 },
+
+  { gatilho: ".experiencia", alvos: ".experiencia > h2" },
+  { gatilho: ".experiencia", alvos: ".experiencia .empresas" },
+  { gatilho: ".empresas-descricao", alvos: ".empresa-desc", passo: 0.15 },
+
+  { gatilho: ".contato", alvos: ".contato > h2" },
+  { gatilho: ".contato", alvos: ".contato-intro" },
+  { gatilho: ".contato-grid", alvos: ".contato-card", passo: 0.12 },
+  { gatilho: ".contato", alvos: ".contato > .btn" },
+];
+
+// Resolve cada grupo em elementos reais, ignorando o que não existir.
+const montados = grupos
+  .map((g) => ({
+    gatilho: document.querySelector(g.gatilho),
+    alvos: [...document.querySelectorAll(g.alvos)],
+    margem: g.margem ?? 85,
+    passo: g.passo ?? 0,
+  }))
+  .filter((g) => g.gatilho && g.alvos.length);
+
+// O escalonamento vira uma variável CSS por elemento: o CSS calcula o
+// transition-delay a partir dela. Fazer isso aqui (e não no HTML) mantém
+// o markup limpo, e é inofensivo se atrasar: o atraso só importa no
+// momento da revelação, que também depende deste script.
+montados.forEach((g) =>
+  g.alvos.forEach((el, i) => {
+    if (g.passo) {
+      el.style.setProperty("--i", i);
+      el.style.setProperty("--passo", g.passo + "s");
+    }
+  })
+);
+
+const mostrar = (alvos) => alvos.forEach((el) => el.classList.add("visivel"));
+const esconder = (alvos) => alvos.forEach((el) => el.classList.remove("visivel"));
+
+// Quem pediu menos movimento vê tudo na hora, sem transição.
+if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  document.documentElement.classList.add("sem-animacao");
+  montados.forEach((g) => mostrar(g.alvos));
+} else if (!("IntersectionObserver" in window)) {
+  // Navegador muito antigo: melhor tudo visível do que nada.
+  montados.forEach((g) => mostrar(g.alvos));
 } else {
-  iniciarAnimacoes();
-}
-
-// ----------------------------------------------------------------------
-function iniciarAnimacoes() {
-  gsap.registerPlugin(ScrollTrigger);
-
-  // Configuração que vale para TODAS as animações daqui para baixo.
-  ScrollTrigger.defaults({
-    // Dispara quando o topo do elemento chega a 85% da altura da tela
-    // (ou seja, quando ele está entrando pela parte de baixo).
-    start: "top 85%",
-    // "Fim" = quando a base do elemento passa do topo da tela,
-    // isto é, quando ele sumiu completamente por cima.
-    end: "bottom top",
-
-    // A ordem é sempre: [descendo entra] [descendo sai] [subindo entra] [subindo sai]
-    //   restart -> toca a animação do zero
-    //   reset   -> volta ao estado escondido, sem animar (acontece fora da tela)
-    //   reverse -> toca a animação de tras para frente (saída suave)
-    toggleActions: "restart reset restart reverse",
+  montados.forEach((g) => {
+    // rootMargin negativo embaixo encolhe a área de disparo: com margem 85,
+    // o gatilho só conta como visível quando entra nos 85% de cima da tela.
+    const observador = new IntersectionObserver(
+      ([entrada]) => (entrada.isIntersecting ? mostrar : esconder)(g.alvos),
+      { rootMargin: `0px 0px -${100 - g.margem}% 0px` }
+    );
+    observador.observe(g.gatilho);
   });
 
-  // Atalho: "aparecer subindo".
-  // clearProps: "all" => ao terminar, o GSAP apaga os estilos inline que criou,
-  // devolvendo o elemento ao CSS original (importante para os :hover funcionarem).
-  function revelar(alvo, extras = {}) {
-    const { gatilho, ...opcoes } = extras;
-    return gsap.from(alvo, {
-      opacity: 0,
-      y: 60,
-      duration: 1,
-      ease: "power3.out",
-      clearProps: "all",
-      scrollTrigger: { trigger: gatilho || alvo },
-      ...opcoes,
+  // Rede de segurança. O IntersectionObserver entrega os callbacks junto ao
+  // ciclo de frames, então numa aba oculta (usuário abriu o link e trocou de
+  // app, comportamento comuníssimo no celular) eles simplesmente não chegam.
+  // Isso se resolve sozinho quando a aba volta a ficar visível, mas se por
+  // qualquer motivo não resolver, nada some para sempre: passados 3 segundos,
+  // tudo que ainda estiver escondido E dentro da tela é revelado na marra.
+  const destravar = () => {
+    montados.forEach((g) => {
+      const r = g.gatilho.getBoundingClientRect();
+      if (r.top < innerHeight && r.bottom > 0) mostrar(g.alvos);
     });
-  }
-
-  // --- HOME ---
-  // A home já está na posição certa quando a página abre, então ela toca de imediato.
-  gsap.from(".home-img img", {
-    opacity: 0,
-    scale: 0.85,
-    duration: 1.2,
-    ease: "power3.out",
-    clearProps: "all",
-    scrollTrigger: { trigger: ".home", start: "top 80%" },
+  };
+  setTimeout(destravar, 3000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) setTimeout(destravar, 300);
   });
-
-  gsap.from(".home-content > *", {
-    opacity: 0,
-    x: -60,
-    duration: 0.9,
-    ease: "power3.out",
-    stagger: 0.15,
-    clearProps: "all",
-    scrollTrigger: { trigger: ".home", start: "top 80%" },
-  });
-
-  // --- SERVIÇOS ---
-  revelar(".servicos .titulo > *", { stagger: 0.15, gatilho: ".servicos" });
-
-  gsap.from(".servicos .card", {
-    opacity: 0,
-    y: 80,
-    scale: 0.92,
-    duration: 0.8,
-    ease: "power3.out",
-    stagger: 0.12, // cada card entra 0.12s depois do anterior
-    clearProps: "all",
-    scrollTrigger: { trigger: ".servicos .cards" },
-  });
-
-  // --- EDUCAÇÃO ---
-  revelar(".educacao > h2");
-  gsap.from(".educacao .depoimento", {
-    opacity: 0,
-    y: 70,
-    duration: 0.9,
-    ease: "power3.out",
-    stagger: 0.2,
-    clearProps: "all",
-    scrollTrigger: { trigger: ".depoimentos", start: "top 80%" },
-  });
-
-  // --- HABILIDADES ---
-  revelar(".habilidades > h2");
-  revelar(".skill-box", { y: 50 });
-
-  // As barras: a largura final está no CSS de cada uma, na variável --w.
-  // A função (i, el) => ... pega esse valor de cada barra individualmente.
-  gsap.fromTo(
-    ".skill-box .fill",
-    { width: 0 },
-    {
-      width: (i, el) => getComputedStyle(el).getPropertyValue("--w").trim(),
-      duration: 1.4,
-      ease: "power2.out",
-      stagger: 0.1,
-      scrollTrigger: { trigger: ".skill-box", start: "top 70%" },
-    }
-  );
-
-  // Os tooltips (95%, 90%...) aparecem depois, com a barra já cheia.
-  gsap.fromTo(
-    ".skill-box .tooltip",
-    { opacity: 0, y: 0 },
-    {
-      opacity: 1,
-      y: -5,
-      duration: 0.4,
-      stagger: 0.1,
-      delay: 0.9,
-      scrollTrigger: { trigger: ".skill-box", start: "top 70%" },
-    }
-  );
-
-  // --- EXPERIÊNCIA ---
-  revelar(".experiencia > h2");
-  revelar(".empresas", { y: 40 });
-  gsap.from(".empresa-desc", {
-    opacity: 0,
-    y: 60,
-    duration: 0.8,
-    ease: "power3.out",
-    stagger: 0.15,
-    clearProps: "all",
-    scrollTrigger: { trigger: ".empresas-descricao" },
-  });
-
-  // --- CONTATO ---
-  revelar(".contato > h2");
-  revelar(".contato-intro");
-  gsap.from(".contato-card", {
-    opacity: 0,
-    y: 60,
-    scale: 0.95,
-    duration: 0.7,
-    ease: "back.out(1.4)", // passa um pouquinho do ponto e volta
-    stagger: 0.12,
-    clearProps: "all",
-    scrollTrigger: { trigger: ".contato-grid" },
-  });
-  revelar(".contato > .btn", { gatilho: ".contato", y: 30 });
-
-  // A fonte (Poppins) chega depois do CSS e muda a altura dos textos, deslocando
-  // as seções. Se isso acontecer depois que o ScrollTrigger já calculou as
-  // posições, os gatilhos ficam presos em lugares antigos e disparam na hora
-  // errada (o bug intermitente: depende de quando a fonte carrega). Recalcula
-  // assim que a fonte estiver pronta.
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(() => ScrollTrigger.refresh());
-  }
-
-  // Depois que tudo (imagens, vídeos) terminar de carregar, os elementos podem
-  // ter mudado de altura. Isso manda o ScrollTrigger recalcular as posições.
-  window.addEventListener("load", () => ScrollTrigger.refresh());
 }
